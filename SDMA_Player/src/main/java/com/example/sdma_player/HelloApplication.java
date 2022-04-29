@@ -1,6 +1,8 @@
+
 package com.example.sdma_player;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.*;
@@ -8,8 +10,10 @@ import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Random;
 
@@ -20,6 +24,11 @@ public class HelloApplication extends Application {
     int HP_test_1 = 1;
     int HP_test_2 = 1;
     int HP_test_3 = 1;
+    int HP_test_4 = 1;
+    int HP_test_5 = 1;
+    int HP_test_6 = 1;
+    int dly = 0;
+    int laserio = 0;
 
     private int angel; //угол
 
@@ -31,11 +40,16 @@ public class HelloApplication extends Application {
     // Задание переменной картинки
     private static final String EnemyImage1 =
             "Enemy1.png";
+
+    private static final String EnemyImage2 =
+            "Enemy2.png";
     // Задание переменной картинки
     private static final String laserBlue01 =
             "laserBlue01.png";
 
     private Image EnemyImg1;
+
+    private Image EnemyImg2;
 
     private Image playerImage;
 
@@ -46,12 +60,13 @@ public class HelloApplication extends Application {
     // Переменные для перемещения
     boolean goNorth, goSouth, goEast, goWest;
 
-    //Circle player = new Circle(50);
     Rectangle player = new Rectangle(100,88);
     Rectangle test_1 = new Rectangle(100,88);
     Rectangle test_2 = new Rectangle(100,88);
     Rectangle test_3 = new Rectangle(100,88);
-
+    Rectangle test_4 = new Rectangle(100,88);
+    Rectangle test_5 = new Rectangle(100,88);
+    Rectangle test_6 = new Rectangle(100,88);
 
 
     Group galaxy = new Group();
@@ -60,6 +75,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws Exception {
 
         EnemyImg1 = new Image(EnemyImage1,100,100,true,true);
+        EnemyImg2 = new Image(EnemyImage2,100,100,true,true);
 
         laserImage = new Image(laserBlue01);
 
@@ -68,13 +84,21 @@ public class HelloApplication extends Application {
 
         player.setFill(new ImagePattern(playerImage));
 
-        test_1.setFill(Color.GREEN);
-        test_2.setFill(Color.GREEN);
-        test_3.setFill(Color.GREEN);
+        //Enemy 1
+        test_1.setFill(new ImagePattern(EnemyImg1));
+        test_2.setFill(new ImagePattern(EnemyImg1));
+        test_3.setFill(new ImagePattern(EnemyImg1));
 
-        test_1.setX(150);test_1.setY(150);
-        test_2.setX(300);test_2.setY(150);
-        test_3.setX(450);test_3.setY(150);
+        test_1.setX(50);test_1.setY(10);
+        test_2.setX(350);test_2.setY(10);
+        test_3.setX(656.4);test_3.setY(10);
+
+        //Enemy 2
+        test_4.setFill(new ImagePattern(EnemyImg2));
+        test_5.setFill(new ImagePattern(EnemyImg2));
+        test_6.setFill(new ImagePattern(EnemyImg2));
+
+
 
 
         galaxy.getChildren().add(player);
@@ -82,9 +106,7 @@ public class HelloApplication extends Application {
 
 
 
-
-
-       movePlayerTo(W / 2, H / 1.2);
+        movePlayerTo(W / 2, H / 1.2);
 
 
 
@@ -162,23 +184,17 @@ public class HelloApplication extends Application {
                 if (goEast)  dx += 5;
                 if (goWest)  dx -= 5;
                 //if (running) { dx *= 2; dy *= 2; }
-
-
-                if (player.getBoundsInParent().intersects((test_1.getLayoutBounds()))){
-                    test_1.setFill(Color.RED);
-                } else{test_1.setFill(Color.GREEN);}
-
-                if (player.getBoundsInParent().intersects((test_2.getLayoutBounds()))){
-                    test_2.setFill(Color.RED);
-                } else{test_2.setFill(Color.GREEN);}
-
-                if (player.getBoundsInParent().intersects((test_3.getLayoutBounds()))){
-                    test_3.setFill(Color.RED);
-                } else{test_3.setFill(Color.GREEN);}
+                if (laserio < 600) {
+                    laserio ++;
+                }
+                if (laserio == 600) {
+                    laserio = 0;
+                }
 
                 Life();
                 spawnTest();
                   movePlayerBy(dx, dy);
+
             }
         };
         timer.start();
@@ -204,6 +220,21 @@ public class HelloApplication extends Application {
             HP_test_3 -= 1;
             System.out.println(HP_player);
         }
+        if (player.getBoundsInParent().intersects((test_4.getLayoutBounds()))) {
+            HP_player -= 1;
+            HP_test_4 -= 1;
+            System.out.println(HP_player);
+        }
+        if (player.getBoundsInParent().intersects((test_5.getLayoutBounds()))) {
+            HP_player -= 1;
+            HP_test_5 -= 1;
+            System.out.println(HP_player);
+        }
+        if (player.getBoundsInParent().intersects((test_6.getLayoutBounds()))) {
+            HP_player -= 1;
+            HP_test_6 -= 1;
+            System.out.println(HP_player);
+        }
         if (HP_player == 0){
             galaxy.getChildren().remove(player);
         }
@@ -219,7 +250,18 @@ public class HelloApplication extends Application {
             galaxy.getChildren().remove(test_3);
             test_3.setX(-150);test_3.setY(-150);
         }
-
+        if (HP_test_4 == 0){
+            galaxy.getChildren().remove(test_4);
+            test_4.setX(-150);test_4.setY(-150);
+        }
+        if (HP_test_5 == 0){
+            galaxy.getChildren().remove(test_5);
+            test_5.setX(-150);test_5.setY(-150);
+        }
+        if (HP_test_6 == 0){
+            galaxy.getChildren().remove(test_6);
+            test_6.setX(-150);test_6.setY(-150);
+        }
 
     }
 
@@ -227,19 +269,17 @@ public class HelloApplication extends Application {
 
         if (HP_test_1 == HP_test_2 && HP_test_2 == HP_test_3 && HP_test_2 == 0 && k == 0){
             k++;
-            test_1.setX(150);test_1.setY(150);
-            test_2.setX(150);test_2.setY(300);
-            test_3.setX(150);test_3.setY(450);
+            test_1.setX(200);test_1.setY(150);
+            test_2.setX(525);test_2.setY(150);
             HP_test_1 +=1;
             HP_test_2 +=1;
-            HP_test_3 +=1;
             galaxy.getChildren().addAll(test_3,test_2,test_1);
         }
         if (HP_test_1 == HP_test_2 && HP_test_2 == HP_test_3 && HP_test_2 == 0 && k == 1){
             k++;
-            test_1.setX(246);test_1.setY(734);
-            test_2.setX(675);test_2.setY(134);
-            test_3.setX(423);test_3.setY(945);
+            test_1.setX(50);test_1.setY(300);
+            test_2.setX(350);test_2.setY(300);
+            test_3.setX(656.4);test_3.setY(300);
             HP_test_1 +=1;
             HP_test_2 +=1;
             HP_test_3 +=1;
@@ -247,13 +287,47 @@ public class HelloApplication extends Application {
         }
         if (HP_test_1 == HP_test_2 && HP_test_2 == HP_test_3 && HP_test_2 == 0 && k == 2){
             k++;
-            test_1.setX(113);test_1.setY(999);
-            test_2.setX(235);test_2.setY(323);
-            test_3.setX(150);test_3.setY(463);
+            test_1.setX(200);test_1.setY(450);
+            test_2.setX(525);test_2.setY(450);
             HP_test_1 +=1;
             HP_test_2 +=1;
-            HP_test_3 +=1;
             galaxy.getChildren().addAll(test_3,test_2,test_1);
+        }
+        if (HP_test_1 == HP_test_2 && HP_test_2 == HP_test_3 && HP_test_2 == 0 && k == 3){
+            k++;
+            test_4.setX(50);test_4.setY(10);
+            test_5.setX(350);test_5.setY(10);
+            test_6.setX(656.4);test_6.setY(10);
+            HP_test_4 +=1;
+            HP_test_5 +=1;
+            HP_test_6 +=1;
+            galaxy.getChildren().addAll(test_6,test_5,test_4,test_3,test_2,test_1);
+        }
+        if (HP_test_4 == HP_test_5 && HP_test_5 == HP_test_6 && HP_test_5 == 0 && k == 4){
+            k++;
+            test_4.setX(200);test_4.setY(150);
+            test_5.setX(525);test_5.setY(150);
+            HP_test_4 +=1;
+            HP_test_5 +=1;
+            galaxy.getChildren().addAll(test_6,test_5,test_4);
+        }
+        if (HP_test_4 == HP_test_5 && HP_test_5 == HP_test_6 && HP_test_5 == 0 && k == 5){
+            k++;
+            test_4.setX(50);test_4.setY(300);
+            test_5.setX(350);test_5.setY(300);
+            test_6.setX(656.4);test_6.setY(300);
+            HP_test_4 +=1;
+            HP_test_5 +=1;
+            HP_test_6 +=1;
+            galaxy.getChildren().addAll(test_6,test_5,test_4);
+        }
+        if (HP_test_4 == HP_test_5 && HP_test_5 == HP_test_6 && HP_test_5 == 0 && k == 6){
+            k++;
+            test_4.setX(200);test_4.setY(450);
+            test_5.setX(525);test_5.setY(450);
+            HP_test_4 +=1;
+            HP_test_5 +=1;
+            galaxy.getChildren().addAll(test_6,test_5,test_4);
         }
     }
 
@@ -262,8 +336,44 @@ public class HelloApplication extends Application {
         Rectangle laser = new Rectangle(15, 30);
         laser.setFill(new ImagePattern(laserImage));
         galaxy.getChildren().add(laser);
-        laser.setX(player.getLayoutX() + 43);
-        laser.setY(player.getLayoutY() - 30);
+        laser.setLayoutX(player.getLayoutX() + 50);
+        laser.setLayoutY(player.getLayoutY() - 30);
+
+        moveshoot(laser);
+
+        }
+
+        private void moveshoot(Rectangle laser){
+
+        laser.setY(laser.getY()-20);
+
+            if (laser.getBoundsInParent().intersects((test_1.getLayoutBounds()))){
+                HP_test_1 -= 1;
+                galaxy.getChildren().remove(laser);
+            }
+            if (laser.getBoundsInParent().intersects((test_2.getLayoutBounds()))){
+                HP_test_2 -= 1;
+                galaxy.getChildren().remove(laser);
+            }
+            if (laser.getBoundsInParent().intersects((test_3.getLayoutBounds()))){
+                HP_test_3 -= 1;
+                galaxy.getChildren().remove(laser);
+            }
+            if (laser.getBoundsInParent().intersects((test_4.getLayoutBounds()))){
+                HP_test_4 -= 1;
+                galaxy.getChildren().remove(laser);
+            }
+            if (laser.getBoundsInParent().intersects((test_5.getLayoutBounds()))){
+                HP_test_5 -= 1;
+                galaxy.getChildren().remove(laser);
+            }
+            if (laser.getBoundsInParent().intersects((test_6.getLayoutBounds()))){
+                HP_test_6 -= 1;
+                galaxy.getChildren().remove(laser);
+            }
+          //  final double cy = laser.getBoundsInLocal().getHeight();
+           // double y = cy + laser.getLayoutY() + dly;
+           // laser.setY(y - cy);
         }
 
 
@@ -329,4 +439,3 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) { launch(args); }
 }
-
